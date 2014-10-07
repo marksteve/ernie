@@ -1,0 +1,10 @@
+triangle:
+  build: triangle
+
+antenna:
+  build: antenna
+  links:
+    - triangle:triangle
+  volumes:
+    - antenna:/usr/src/app
+
