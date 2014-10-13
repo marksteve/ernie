@@ -16,7 +16,7 @@ class SMS(Resource):
     parser.add_argument("shortcode", type=int)
     parser.add_argument("request_id", type=str)
     parser.add_argument("message", type=str)
-    parser.add_argument("timestamp", type=int)
+    parser.add_argument("timestamp", type=float)
     self.parser = parser
 
   @marshal_with(dict(

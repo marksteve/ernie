@@ -1,0 +1,7 @@
+Flask
+Flask-Login
+Flask-RESTful
+otpauth
+redis
+requests
+simpleflake
