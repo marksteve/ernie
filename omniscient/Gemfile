@@ -1,0 +1,18 @@
+source 'https://rubygems.org'
+ruby '2.1.2'
+
+# for app
+gem 'sinatra'
+gem 'thin'
+
+group :application do
+  # Web services
+  gem 'yahoo_weatherman', '~> 2.0.0'
+  gem 'google_directions'
+  gem 'wolfram-alpha', '~> 0.3.1'
+  gem 'imdb'
+  gem 'nokogiri', '~> 1.6.3.1'
+end
+group :test do
+  gem 'rubocop'
+end
