@@ -3,7 +3,7 @@ antenna:
   volumes:
     - antenna:/usr/src/app
   ports:
-    - 5000:5000
+    - 5000
   links:
     - omniscient:omniscient
   environment:
@@ -16,5 +16,3 @@ omniscient:
   build: omniscient
   volumes:
     - omniscient:/usr/src/app
-  ports:
-    - 4567:4567
