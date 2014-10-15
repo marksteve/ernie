@@ -1,3 +1,5 @@
+import os
+
 import requests
 from flask import current_app
 from flask_restful import abort, fields, marshal_with, Resource
@@ -5,6 +7,57 @@ from flask_restful.reqparse import RequestParser
 from simpleflake import simpleflake
 
 CHIKKA_REPLY_ENDPOINT = "https://post.chikka.com/smsapi/request"
+
+
+wit = requests.Session()
+wit.headers.update({
+  "Authorization": "Bearer {}".format(
+    os.environ["WIT_ACCESS_TOKEN"],
+  )
+})
+
+
+def parse_query(q):
+  res = wit.get("https://api.wit.ai/message", params=dict(
+    v=20141015,
+    q=q,
+  ))
+  if res.status_code != requests.codes.ok:
+    return
+  for outcome in res.json()["outcomes"]:
+    return outcome
+
+
+def ernie_answer(q):
+  outcome = parse_query(q)
+  if not outcome:
+    return "Failed to parse query"
+
+  intent = outcome["intent"]
+
+  if intent == "get_weather":
+    location = None
+    for entity_type, entities in outcome["entities"].items():
+      if entity_type == "location":
+        for entity in entities:
+          location = entity["value"]
+          break
+        break
+    if not location:
+      return "You need to provide a location"
+    res = requests.get(
+      "http://omniscient:4567/weather/{}".format(
+        location
+      ),
+    )
+    if res.status_code != requests.codes.ok:
+      return "Failed to get weather"
+    return "It's {} in {}.".format(
+      res.json()["desc"],
+      location,
+    )
+
+  return "Sorry. I can't answer you right now :("
 
 
 class SMS(Resource):
@@ -32,6 +85,8 @@ class SMS(Resource):
     if args.shortcode != int(current_app.config["CHIKKA_SHORTCODE"]):
       abort(400, message="Invalid shortcode: {}".format(args.shortcode))
 
+    reply = ernie_answer(args.message)
+
     res = requests.post(
       CHIKKA_REPLY_ENDPOINT,
       data=dict(
@@ -40,7 +95,7 @@ class SMS(Resource):
         shortcode=args.shortcode,
         request_id=args.request_id,
         message_id=simpleflake(),
-        message=args.message,
+        message=reply + "\n-\n",
         request_cost="FREE",
         client_id=current_app.config["CHIKKA_CLIENT_ID"],
         secret_key=current_app.config["CHIKKA_SECRET_KEY"],
@@ -50,5 +105,4 @@ class SMS(Resource):
     if res.status_code != requests.codes.ok:
       abort(500)
 
-    return dict(status=200, message=args.message)
-
+    return dict(status=200, message=reply)
