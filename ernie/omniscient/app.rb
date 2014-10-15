@@ -8,6 +8,7 @@ require 'imdb'
 
 configure do
   set :conf, YAML.load_file("config.yml") rescue nil || {}
+  set :bind, '0.0.0.0'
 end
 
 helpers do
