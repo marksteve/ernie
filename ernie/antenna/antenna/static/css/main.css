@@ -1,0 +1,27 @@
+* {
+  box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+body {
+  font-size: 30px;
+  font-family: Inconsolata;
+}
+.page {
+  width: 12em;
+  margin: 0 auto;
+}
+h1 {
+  background: url(../images/ernie.png) no-repeat;
+  background-size: 128px;
+  height: 174px;
+  padding-top: 154px;
+  margin-bottom: 1em;
+}
+.number {
+  font-weight: bold;
+  display: inline-block;
+  text-align: right;
+}
