@@ -35,6 +35,9 @@ def ernie_answer(q):
 
   intent = outcome["intent"]
 
+  if outcome["confidence"] < 0.5:
+    intent = "wolfram"
+
   if intent == "get_weather":
     location = None
     for entity_type, entities in outcome["entities"].items():
@@ -76,6 +79,17 @@ def ernie_answer(q):
     if res.status_code != requests.codes.ok:
       return "Failed to get directions"
     return "[DIRECTION GOES HERE]"
+
+  if intent == "wolfram":
+    res = requests.get(
+      "http://omniscient:4567/any",
+      params=dict(
+        q=outcome["_text"],
+      ),
+    )
+    if res.status_code != requests.codes.ok:
+      return "Failed to answer question"
+    return "[WOLFRAM ANSWER GOES HERE]"
 
   return "Sorry. I can't answer you right now :("
 
