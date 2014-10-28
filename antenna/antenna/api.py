@@ -19,7 +19,7 @@ wit.headers.update({
 
 def parse_query(q):
   res = wit.get("https://api.wit.ai/message", params=dict(
-    v=20141015,
+    v=20141022,
     q=q,
   ))
   if res.status_code != requests.codes.ok:
@@ -56,6 +56,26 @@ def ernie_answer(q):
       res.json()["desc"],
       location,
     )
+
+  if intent == "get_direction":
+    locations = []
+    for entity_type, entities in outcome["entities"].items():
+      if entity_type == "location":
+        for entity in entities:
+          locations.append(entity["value"])
+          if len(locations) >= 2:
+            break
+    if len(location) != 2:
+      return "Didn't understand that"
+    res = requests.get(
+      "http://omniscient:4567/goto/{}/{}".format(
+        locations[0],
+        locations[1],
+      ),
+    )
+    if res.status_code != requests.codes.ok:
+      return "Failed to get directions"
+    return "[DIRECTION GOES HERE]"
 
   return "Sorry. I can't answer you right now :("
 
