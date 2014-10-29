@@ -58,6 +58,9 @@ get '/goto/:origin/:destination' do
   destination = params[:destination]
   # If params origin is missing, just give back the "address"
   directions = GoogleDirections.new(origin, destination)
+  if directions.status != 'OK'
+    return json_status 404, 'Not found'
+  end
   result = {
     distance: directions.distance_text,
     time: directions.drive_time_in_minutes,
