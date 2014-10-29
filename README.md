@@ -28,9 +28,13 @@ Check which port was used (49xxx)
 fig ps
 ```
 
-Update nginx config
+Update nginx config with new port
 ```bash
 vim ~/etc/nginx/ernie.conf
+```
+
+Reload nginx config and you're done
+```bash
 sudo nginx -s reload
 ```
 
