@@ -128,6 +128,7 @@ class SMS(Resource):
         request_id=args.request_id,
         request_cost="FREE",
       )
+    current_app.logger.debug("Sending message: %r", data)
     res = requests.post(CHIKKA_REPLY_ENDPOINT, data=data)
     if res.status_code != requests.codes.ok:
       current_app.logger.debug("""
@@ -152,7 +153,6 @@ Body: %r
 
     current_app.logger.debug("Query: %r", args)
     reply = ernie_answer(args.message)
-    current_app.logger.debug("Reply: %r", reply)
 
     self.__send("REPLY", args, reply[:MSG_MAX_LEN] + "\n-\n")
 
