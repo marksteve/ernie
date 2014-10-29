@@ -128,14 +128,15 @@ class SMS(Resource):
         request_id=args.request_id,
         request_cost="FREE",
       )
+
     current_app.logger.debug("Sending message: %r", data)
     res = requests.post(CHIKKA_REPLY_ENDPOINT, data=data)
-    if res.status_code != requests.codes.ok:
-      current_app.logger.debug("""
-Error sending message:
+    current_app.logger.debug("""
 Status code: %r
 Body: %r
 """, res.status_code, res.content)
+
+    if res.status_code != requests.codes.ok:
       abort(500)
 
   @marshal_with(dict(
