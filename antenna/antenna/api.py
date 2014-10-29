@@ -113,6 +113,30 @@ class SMS(Resource):
     parser.add_argument("timestamp", type=float)
     self.parser = parser
 
+  def __send(self, message_type, args, message):
+    data = dict(
+      message_type=message_type,
+      mobile_number=args.mobile_number,
+      shortcode=args.shortcode,
+      message_id=simpleflake(),
+      message=message,
+      client_id=current_app.config["CHIKKA_CLIENT_ID"],
+      secret_key=current_app.config["CHIKKA_SECRET_KEY"],
+    )
+    if message_type == "REPLY":
+      data.update(
+        request_id=args.request_id,
+        request_cost="FREE",
+      )
+    res = requests.post(CHIKKA_REPLY_ENDPOINT, data=data)
+    if res.status_code != requests.codes.ok:
+      current_app.logger.debug("""
+Error sending message:
+Status code: %r
+Body: %r
+""", res.status_code, res.content)
+      abort(500)
+
   @marshal_with(dict(
     status=fields.Integer,
     message=fields.String,
@@ -130,27 +154,12 @@ class SMS(Resource):
     reply = ernie_answer(args.message)
     current_app.logger.debug("Reply: %r", reply)
 
-    res = requests.post(
-      CHIKKA_REPLY_ENDPOINT,
-      data=dict(
-        message_type="REPLY",  # Inconsistent
-        mobile_number=args.mobile_number,
-        shortcode=args.shortcode,
-        request_id=args.request_id,
-        message_id=simpleflake(),
-        message=reply + "\n-\n",
-        request_cost="FREE",
-        client_id=current_app.config["CHIKKA_CLIENT_ID"],
-        secret_key=current_app.config["CHIKKA_SECRET_KEY"],
-      ),
-    )
+    self.__send("REPLY", args, reply[:410] + "\n-\n")
 
-    if res.status_code != requests.codes.ok:
-      current_app.logger.debug("""
-Error sending message:
-Status code: %r
-Body: %r
-""", res.status_code, res.content)
-      abort(500)
+    if len(reply) > 410:
+      reply = reply[410:]
+      while reply:
+        self.__send("SEND", args, reply[:410] + "\n-\n")
+        reply = reply[410:]
 
     return dict(status=200, message=reply)
