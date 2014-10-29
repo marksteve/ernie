@@ -78,7 +78,14 @@ def ernie_answer(q):
     )
     if res.status_code != requests.codes.ok:
       return "Failed to get directions"
-    return "[DIRECTION GOES HERE]"
+    directions = res.json()
+    if directions["steps"] == "[]":
+      return "Failed to get directions"
+    return """
+Distance: {distance}
+Time: {time} mins
+Steps:
+{steps}""".format(**directions)
 
   if intent == "wolfram":
     res = requests.get(
