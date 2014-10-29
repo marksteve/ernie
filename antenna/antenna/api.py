@@ -126,7 +126,9 @@ class SMS(Resource):
     if args.shortcode != int(current_app.config["CHIKKA_SHORTCODE"]):
       abort(400, message="Invalid shortcode: {}".format(args.shortcode))
 
+    current_app.logger.debug("Query: {}", args)
     reply = ernie_answer(args.message)
+    current_app.logger.debug("Reply: {}", reply)
 
     res = requests.post(
       CHIKKA_REPLY_ENDPOINT,
