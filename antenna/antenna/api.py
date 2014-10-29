@@ -118,7 +118,7 @@ class SMS(Resource):
       message_type=message_type,
       mobile_number=args.mobile_number,
       shortcode=args.shortcode,
-      message_id=simpleflake(),
+      message_id=str(simpleflake()),
       message=message,
       client_id=current_app.config["CHIKKA_CLIENT_ID"],
       secret_key=current_app.config["CHIKKA_SECRET_KEY"],
