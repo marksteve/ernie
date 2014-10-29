@@ -7,6 +7,7 @@ from flask_restful.reqparse import RequestParser
 from simpleflake import simpleflake
 
 CHIKKA_REPLY_ENDPOINT = "https://post.chikka.com/smsapi/request"
+MSG_MAX_LEN = 200
 
 
 wit = requests.Session()
@@ -81,8 +82,7 @@ def ernie_answer(q):
     directions = res.json()
     if directions["steps"] == "[]":
       return "Failed to get directions"
-    return """
-Distance: {distance}
+    return """Distance: {distance}
 Time: {time} mins
 Steps:
 {steps}""".format(**directions)
@@ -154,12 +154,12 @@ Body: %r
     reply = ernie_answer(args.message)
     current_app.logger.debug("Reply: %r", reply)
 
-    self.__send("REPLY", args, reply[:410] + "\n-\n")
+    self.__send("REPLY", args, reply[:MSG_MAX_LEN] + "\n-\n")
 
-    if len(reply) > 410:
-      reply = reply[410:]
+    if len(reply) > MSG_MAX_LEN:
+      reply = reply[MSG_MAX_LEN:]
       while reply:
-        self.__send("SEND", args, reply[:410] + "\n-\n")
-        reply = reply[410:]
+        self.__send("SEND", args, reply[:MSG_MAX_LEN] + "\n-\n")
+        reply = reply[MSG_MAX_LEN:]
 
     return dict(status=200, message=reply)
