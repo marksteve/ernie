@@ -146,6 +146,11 @@ class SMS(Resource):
     )
 
     if res.status_code != requests.codes.ok:
+      current_app.logger.debug("""
+Error sending message:
+Status code: %r
+Body: %r
+""", res.status_code, res.content)
       abort(500)
 
     return dict(status=200, message=reply)
