@@ -68,7 +68,7 @@ def ernie_answer(q):
           locations.append(entity["value"])
           if len(locations) >= 2:
             break
-    if len(location) != 2:
+    if len(locations) != 2:
       return "Didn't understand that"
     res = requests.get(
       "http://omniscient:4567/goto/{}/{}".format(
