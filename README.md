@@ -3,7 +3,6 @@
 ## Deployment
 
 ```bash
-sudo su - marksteve
 cd src/textify
 git pull
 ```
