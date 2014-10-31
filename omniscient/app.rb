@@ -66,7 +66,7 @@ get '/movie/:sched' do
 end
 
 get '/any/:whatever' do
-  halt 500, 'Missing config' if settings.conf['api']['wolfram_key'].blank?
+  halt 500, 'Missing config' if settings.conf['api']['wolfram_key'].nil?
   halt 400, 'Missing param' unless params[:whatever]
   whatever = params[:whatever]
   options = { format: 'plaintext' } # see the reference appendix in the documentation.[1]
@@ -74,7 +74,6 @@ get '/any/:whatever' do
   response = client.query "#{whatever}"
   input = response["Input"] # Get the input interpretation pod.
   result = response.find { |pod| pod.title == 'Result' } # Get the result pods
-  puts result.inspect
   halt 404, "Not found" if result.nil?
   result = {
     query: input.subpods[0].plaintext,
