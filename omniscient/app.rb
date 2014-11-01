@@ -65,13 +65,13 @@ get '/movie/:sched' do
   halt 418, 'Teapot!'
 end
 
-get '/any/:whatever' do
+get '/any' do
   halt 500, 'Missing config' if settings.conf['api']['wolfram_key'].nil?
-  halt 400, 'Missing param' unless params[:whatever]
-  whatever = params[:whatever]
+  halt 400, 'Missing param' unless params[:query]
+  request_query = params[:query]
   options = { format: 'plaintext' } # see the reference appendix in the documentation.[1]
   client = WolframAlpha::Client.new settings.conf['api']['wolfram_key'], options
-  response = client.query "#{whatever}"
+  response = client.query "#{request_query}"
   input = response["Input"] # Get the input interpretation pod.
   result = response.find { |pod| pod.title == 'Result' } # Get the result pods
   halt 404, "Not found" if result.nil?
