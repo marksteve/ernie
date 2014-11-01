@@ -85,18 +85,18 @@ def ernie_answer(q):
     return """Distance: {distance}
 Time: {time} mins
 Steps:
-{steps}""".format(**directions)
+{steps}""".format(**directions).replace("[", "(").replace("]", ")")
 
   if intent == "wolfram":
     res = requests.get(
       "http://omniscient:4567/any",
       params=dict(
-        q=outcome["_text"],
+        query=outcome["_text"],
       ),
     )
     if res.status_code != requests.codes.ok:
       return "Failed to answer question"
-    return "[WOLFRAM ANSWER GOES HERE]"
+    return response.content
 
   return "Sorry. I can't answer you right now :("
 
