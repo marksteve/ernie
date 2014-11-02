@@ -96,7 +96,7 @@ Steps:
     )
     if res.status_code != requests.codes.ok:
       return "Failed to answer question"
-    return response.content
+    return res.content
 
   return "Sorry. I can't answer you right now :("
 
