@@ -10,16 +10,27 @@ body {
   font-family: Inconsolata;
 }
 .page {
-  width: 12em;
+  width: 30em;
   margin: 0 auto;
 }
 h1 {
   background: url(../images/ernie.png) no-repeat;
   background-size: 128px;
-  height: 174px;
-  padding-top: 154px;
+  height: 160px;
+  padding-top: 58px;
   margin-bottom: 1em;
+  margin-left: 3.5em;
+  text-align: center;
+  -webkit-transition: width 2s, height 2s, -webkit-transform 2s; /* For Safari 3.1 to 6.0 */
+  transition: width 2s, height 2s, transform 2s;
 }
+
+h1:hover {
+    height: 260px;
+    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+    transform: rotate(180deg);
+}
+
 .number {
   font-weight: bold;
   display: inline-block;
