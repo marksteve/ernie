@@ -18,7 +18,7 @@ end
 
 helpers do
   def capitalize(input_string)
-    input_string.split.map(&:capitalize)*' '
+    input_string.split.map(&:capitalize).join(' ')
   end
   def strip_it(input_string)
     input_string.gsub(/([\n|\t])|(\&nbsp;?){1,}/, '').gsub(/(\s)/, ' ').strip
@@ -68,18 +68,22 @@ get '/traffic/:location' do
   location = params[:location].split.map(&:capitalize).join(' ')
   mechanize = Mechanize.new
   result = []
+  last_update = ''
   road_lines = settings.conf['mmda']
   road_lines.each do |road_line|
     page = mechanize.get(road_line)
-    result = page.search("div.line-table > div:contains('#{location}') > div.line-col").text.strip
-    if result.empty?
-      next
-    else
-      break
-    end
+    result = page.search("div.line-table > div:contains('#{location}') > div.line-col > div.line-status > div:nth-child(2)")
+    last_update = page.search("div.line-table > div:contains('#{location}') > div.line-col > p").text
+    break unless result.empty?
   end
   halt 404, "Not found" if result.empty?
-  strip_it(result).to_json
+  result = {
+    query: location,
+    sb_situation: result[0].text,
+    nb_situation: result[1].text,
+    summary: "SB: #{result[0].text}\nNB: #{result[1].text}\nAs of: #{last_update}",
+    last_update: last_update }
+  result.to_json
 end
 
 # TODO
