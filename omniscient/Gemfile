@@ -11,6 +11,7 @@ group :application do
   gem 'google_directions'
   gem 'wolfram-alpha', '~> 0.3.1'
   gem 'nokogiri', '~> 1.6.3.1'
+  gem 'mechanize'
 end
 group :test do
   gem 'rubocop'

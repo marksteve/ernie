@@ -1,3 +1,14 @@
 api:
   weather_key: '895265669bc0010dfddbf519184ba5aa'
   wolfram_key: '24KU74-5568RYXE5W'
+mmda:
+ - 'http://mmdatraffic.interaksyon.com/line-view-edsa.php'
+ - 'http://mmdatraffic.interaksyon.com/line-view-commonwealth.php'
+ - 'http://mmdatraffic.interaksyon.com/line-view-quezon-ave.php'
+ - 'http://mmdatraffic.interaksyon.com/line-view-espana.php'
+ - 'http://mmdatraffic.interaksyon.com/line-view-c5.php'
+ - 'http://mmdatraffic.interaksyon.com/line-view-ortigas.php'
+ - 'http://mmdatraffic.interaksyon.com/line-view-marcos-highway.php'
+ - 'http://mmdatraffic.interaksyon.com/line-view-roxas-blvd.php'
+ - 'http://mmdatraffic.interaksyon.com/line-view-slex.php'
+ - 'http://mmdatraffic.interaksyon.com/nlex/line-view-nlex.php'

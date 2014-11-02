@@ -4,6 +4,7 @@ require 'json'
 require 'yahoo_weatherman'
 require 'google_directions'
 require 'wolfram-alpha'
+require 'mechanize'
 
 configure do
   set :conf, YAML.load_file('config.yml') rescue nil || {}
@@ -16,6 +17,12 @@ before do
 end
 
 helpers do
+  def capitalize(input_string)
+    input_string.split.map(&:capitalize)*' '
+  end
+  def strip_it(input_string)
+    input_string.gsub(/([\n|\t])|(\&nbsp;?){1,}/, '').gsub(/(\s)/, ' ').strip
+  end
 end
 
 get '/' do
@@ -57,7 +64,22 @@ end
 
 # TODO
 get '/traffic/:location' do
-  halt 418, 'Teapot!'
+  halt 400, 'Missing param' unless params[:location]
+  location = params[:location].split.map(&:capitalize).join(' ')
+  mechanize = Mechanize.new
+  result = []
+  road_lines = settings.conf['mmda']
+  road_lines.each do |road_line|
+    page = mechanize.get(road_line)
+    result = page.search("div.line-table > div:contains('#{location}') > div.line-col").text.strip
+    if result.empty?
+      next
+    else
+      break
+    end
+  end
+  halt 404, "Not found" if result.empty?
+  strip_it(result).to_json
 end
 
 # TODO
