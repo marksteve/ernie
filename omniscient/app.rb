@@ -32,7 +32,6 @@ end
 get '/weather/:location' do
   halt 400, 'Missing param' unless params[:location]
   location = params[:location]
-  result = []
 
   client = Weatherman::Client.new
   response = client.lookup_by_location("#{location}")
@@ -67,16 +66,17 @@ get '/traffic/:location' do
   halt 400, 'Missing param' unless params[:location]
   location = params[:location].split.map(&:capitalize).join(' ')
   mechanize = Mechanize.new
-  result = []
+  situation = []
   last_update = ''
   road_lines = settings.conf['mmda']
   road_lines.each do |road_line|
     page = mechanize.get(road_line)
-    result = page.search("div.line-table > div:contains('#{location}') > div.line-col > div.line-status > div:nth-child(2)")
-    last_update = page.search("div.line-table > div:contains('#{location}') > div.line-col > p").last.text
-    break unless result.empty?
+    situation = page.search("div.line-table > div:contains('#{location}') > div.line-col > div.line-status > div:nth-child(2)")
+    last_update = page.search("div.line-table > div:contains('#{location}') > div.line-col > p")
+    break unless situation.empty?
   end
-  halt 404, "Not found" if result.empty?
+  halt 404, 'Not found' if situation.empty?
+  last_update.last.text unless last_update.blank?
   result = {
     query: location,
     sb_situation: result[0].text,
@@ -97,11 +97,15 @@ get '/any' do
   options = { format: 'plaintext' } # see the reference appendix in the documentation.[1]
   client = WolframAlpha::Client.new settings.conf['api']['wolfram_key'], options
   response = client.query "#{request_query}"
-  input = response["Input"] # Get the input interpretation pod.
+  input = response['Input'] # Get the input interpretation pod.
   result = response.find { |pod| pod.title == 'Result' } # Get the result pods
-  halt 404, "Not found" if result.nil?
+  halt 404, 'Not found' if result.nil?
   result = {
     query: input.subpods[0].plaintext,
     answer: result.subpods[0].plaintext }
   result.to_json
+end
+
+not_found do
+  halt 400, 'We aint got that.'
 end
