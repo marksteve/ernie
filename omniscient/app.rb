@@ -73,7 +73,7 @@ get '/traffic/:location' do
   road_lines.each do |road_line|
     page = mechanize.get(road_line)
     result = page.search("div.line-table > div:contains('#{location}') > div.line-col > div.line-status > div:nth-child(2)")
-    last_update = page.search("div.line-table > div:contains('#{location}') > div.line-col > p").text
+    last_update = page.search("div.line-table > div:contains('#{location}') > div.line-col > p").last.text
     break unless result.empty?
   end
   halt 404, "Not found" if result.empty?
@@ -81,7 +81,6 @@ get '/traffic/:location' do
     query: location,
     sb_situation: result[0].text,
     nb_situation: result[1].text,
-    summary: "SB: #{result[0].text}\nNB: #{result[1].text}\nAs of: #{last_update}",
     last_update: last_update }
   result.to_json
 end
