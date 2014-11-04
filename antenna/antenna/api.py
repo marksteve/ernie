@@ -38,7 +38,7 @@ def ernie_answer(q):
 
   current_app.logger.debug("Outcome: %r", outcome)
 
-  if outcome["confidence"] < 0.6:
+  if outcome["confidence"] < 0.7:
     intent = "wolfram"
 
   if intent == "get_weather":
