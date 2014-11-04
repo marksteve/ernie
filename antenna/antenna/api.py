@@ -84,6 +84,25 @@ def ernie_answer(q):
       return "Failed to get directions"
     return res.json()["reply"]
 
+  if intent == "get_traffic":
+    location = None
+    for entity_type, entities in outcome["entities"].items():
+      if entity_type == "location":
+        for entity in entities:
+          location = entity["value"]
+          break
+        break
+    if not location:
+      return "You need to provide a location"
+    res = requests.get(
+      "http://omniscient:4567/traffic/{}".format(
+        location
+      ),
+    )
+    if res.status_code != requests.codes.ok:
+      return "Failed to get traffic"
+    return res.json()["reply"]
+
   if intent == "wolfram":
     res = requests.get(
       "http://omniscient:4567/any",
