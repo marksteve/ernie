@@ -51,12 +51,11 @@ get '/goto/:origin/:destination' do
   destination = params[:destination]
   # TODO If params origin is missing, just give back the "address"
   directions = GoogleDirections.new(origin, destination)
-  halt 404, 'Not found' if directions.status != 'OK'
-
+  halt 404, "Not found #{directions.status}" if directions.status != 'OK'
   result = {
     distance: directions.distance_text,
     time: directions.drive_time_in_minutes,
-    steps: directions.steps.to_s.gsub(/<[^>]*>/ui, '').gsub(/"|'/, ''),
+    steps: directions.steps.join(" ").gsub(/<[^>]*>/ui, '').gsub(/"|'/, ''),
     size: directions.steps.size }
   result.to_json
 end
@@ -106,6 +105,4 @@ get '/any' do
   result.to_json
 end
 
-not_found do
-  halt 400, 'We aint got that.'
-end
+
