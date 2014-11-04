@@ -23,6 +23,14 @@ helpers do
   def strip_it(input_string)
     input_string.gsub(/([\n|\t])|(\&nbsp;?){1,}/, '').gsub(/(\s)/, ' ').strip
   end
+  def initial_check(input_string)
+    wolfram_pods = ['Result', 'Response', 'Basic information', 'Definition', 'Current result', 'Population']
+    return true if wolfram_pods.include? input_string
+  end
+  def final_check(input_string)
+    wolfram_pods = ['Input interpretation', 'Ernie']
+    return true if wolfram_pods.include? input_string
+  end
 end
 
 get '/' do
@@ -96,7 +104,8 @@ get '/any' do
   client = WolframAlpha::Client.new settings.conf['api']['wolfram_key'], options
   response = client.query "#{request_query}"
   input = response['Input'] # Get the input interpretation pod.
-  result = response.find { |pod| pod.title == 'Result' } # Get the result pods
+  result = response.find { |pod| initial_check(pod.title) } # Get the result pods
+  result = response.find { |pod| final_check(pod.title) } if result.nil? # Get the other pods
   halt 404, 'Not found' if result.nil?
   result = {
     query: input.subpods[0].plaintext,
