@@ -27,6 +27,11 @@ h2 {
   font-weight: normal;
 }
 
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .ernie {
   background: url(../images/bg.jpg) no-repeat center center;
   background-size: cover;
