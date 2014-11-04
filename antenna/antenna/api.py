@@ -36,6 +36,8 @@ def ernie_answer(q):
 
   intent = outcome["intent"]
 
+  current_app.logger.debug("Outcome: %r", outcome)
+
   if outcome["confidence"] < 0.5:
     intent = "wolfram"
 
