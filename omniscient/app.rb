@@ -60,7 +60,6 @@ get '/goto/:origin/:destination' do
   result.to_json
 end
 
-# TODO
 get '/traffic/:location' do
   halt 400, 'Missing param' unless params[:location]
   location = params[:location].split.map(&:capitalize).join(' ')
