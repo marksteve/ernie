@@ -5,34 +5,67 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Inconsolata:400,700">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/pagepiling.js/jquery.pagepiling.css') }}">
   </head>
   <body>
-    <div class="page">
-      <h1>Ernie</h1>
-      <h2>No net, no problem!</h2>
-      <p>Ernie is an sms-based personal assistant that gives you various information from the web without having a net. Both input and output are via SMS. It uses natural language as input instead of the traditional "keywords" that you have to memorize so it’s less confusing. The output ranges from Point A to Point B directions, traffic situation, random questions, complex calculations and weather conditions & forecast.</p>
-      <p>...BECAUSE KNOWLEDGE IS POWER!</p>
-      <p>Just send your "query" to:</p>
-      <div class="number">
-        29290XXXX (contact us for the access code)
+    <div id="pagepiling">
+      <div class="ernie section">
+        <h1>Ernie</h1>
+        <h2>We all know Siri<br>Meet <strong>Ernie</strong></h2>
+        <p>Scroll down<br>to learn more<br>&#x25BC;</p>
       </div>
-      <div class="samples">
-        <h3>Samples</h3>
-        <p>User sends: "How's the weather in Baguio?" </p>
-        <p>Ernie replies: It's mostly cloudy in Baguio.</p>
-        <p> User sends: "How do I get to Kapitolyo from Ortigas Center?" </p>
-        <p>Ernie replies: Head northeast on E Capitol Dr toward Santa Maria St, Take the 3rd right onto W Capitol Dr, At the roundabout, take the 3rd exit onto Shaw Blvd, Turn right onto San Miguel Ave, Turn left" Plus, many more. </p>
+      <div class="desc section">
+        <h2>Who's Ernie?</h2>
+        <p>
+          Ernie is like Siri but you talk to him through SMS.<br>
+          Yep, that's right. No internet? No problem!
+        </p>
+        <p>
+          How's the weather in Baguio? Ask Ernie.<br>
+          Is it traffic in EDSA? Ask Ernie.<br>
+          How do you get from Greenbelt to Saguijo? Ask Ernie!
+        </p>
+        <p>
+          Just send your question to 29290XXXX.<br>
+          No keywords to remember, just one number to send to.
+        </p>
       </div>
-      <div class="features">
-      <h3>Features</h3>
-        <ul>
-          <li>Weather</li>
-          <li>Directions from point A to point B ie. How do I go to Katipunan from Marikina?</li>
-          <li>Random calculation or question ie. President of the Philippines</li>
-          <li>Traffic situation ie. how's the traffic in Balintawak?</li>
-          <li>...plus we're planning to add more like movie scheds etc.</li>
-        </ul>
+      <div class="demo section">
+        <h2>Try Ernie</h2>
+        <form action="" method="post">
+          <p><input type="text" placeholder="Question" size="80"></p>
+          <p><button>Ask Ernie</button></p>
+        </form>
+      </div>
+      <div class="about section">
+        <h2>Made by Kat and Steve</h2>
+        <p>
+          Ernie was "brought to life" by<br>
+          Kat Padilla (<a href="https://twitter.com/katpadi">@katpadi</a>) and
+          Mark Steve Samson (<a href="https://twitter.com/themarksteve">@themarksteve</a>)<br>
+          as an entry to <a href="http://www.eventbrite.com/e/textify-the-chikka-api-challenge-tickets-12953681811">Textify</a>
+          &mdash; Chikka's developer challenge
+        </p>
       </div>
     </div>
+    <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/pagepiling.js/jquery.pagepiling.min.js') }}"></script>
+    <script>
+      $(document).ready(function() {
+        $('#pagepiling').pagepiling({
+          navigation: {
+            textColor: 'black',
+            bulletsColor: 'black',
+            position: 'right',
+            tooltips: [
+              "We all know Siri",
+              "Who's Ernie?",
+              "Try Ernie",
+              "Made by Kat and Steve"
+            ]
+          }
+        });
+      });
+    </script>
   </body>
 </html>

@@ -5,34 +5,61 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
+
 body {
-  font-size: 30px;
   font-family: Inconsolata;
-}
-.page {
-  width: 30em;
-  margin: 0 auto;
-}
-h1 {
-  background: url(../images/ernie.png) no-repeat;
-  background-size: 128px;
-  height: 160px;
-  padding-top: 58px;
-  margin-bottom: 1em;
-  margin-left: 3.5em;
   text-align: center;
-  -webkit-transition: width 2s, height 2s, -webkit-transform 2s; /* For Safari 3.1 to 6.0 */
-  transition: width 2s, height 2s, transform 2s;
 }
 
-h1:hover {
-    height: 260px;
-    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-    transform: rotate(180deg);
+h1 {
+  background: url(../images/ernie.png) no-repeat center center;
+  width: 300px;
+  height: 300px;
+  background-size: 150px;
+  border-radius: 50%;
+  border: 2px solid;
+  margin: 0 auto;
+  text-indent: -1000em;
 }
 
-.number {
-  font-weight: bold;
-  display: inline-block;
-  text-align: right;
+h2 {
+  font-size: 30px;
+  font-weight: normal;
+}
+
+.ernie {
+  background: url(../images/bg.jpg) no-repeat center center;
+  background-size: cover;
+}
+
+.desc {
+  background: #e6dada;
+}
+
+.demo {
+  background: #274046;
+  color: white;
+}
+
+.demo input {
+  border: 0;
+  background: #274046;
+  color: white;
+  border-bottom: 1px solid;
+  font-size: 30px;
+  padding: 0.5em 1em;
+  text-align: center;
+}
+
+.demo input:active,
+.demo input:focus {
+  outline: none;
+}
+
+.demo button {
+  background: #274046;
+  color: white;
+  border: 1px solid;
+  line-height: 2;
+  padding: 0 1em;
 }
