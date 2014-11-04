@@ -40,15 +40,18 @@ end
 get '/weather/:location' do
   halt 400, 'Missing param' unless params[:location]
   location = params[:location]
-
   client = Weatherman::Client.new
   response = client.lookup_by_location("#{location}")
   halt 404, 'Not found' if response.description.include? 'Invalid Input'
-
+  # IMPROVE - ugh ugly codes
+  temp = response.condition['temp'] || ''
+  desc = response.condition['text'] || ''
+  day = params[:day] ? params[:day] : 0
+  halt 404, 'Day of weather too advanced' if response.forecasts[day.to_i].nil?
+  forecast = response.forecasts[day.to_i]['text']
+  reply = day==0 ? "#{temp}C with #{forecast} and #{desc} today}" : "#{forecast} on #{response.forecasts[day.to_i]['day']}"
   result = {
-    temp: response.condition['temp'] || '',
-    desc: response.condition['text'] || '',
-    forecast: response.forecasts[2]['text'] || ''
+    reply: reply
   }
   result.to_json
 end
@@ -63,7 +66,7 @@ get '/goto/:origin/:destination' do
   result = {
     distance: directions.distance_text,
     time: directions.drive_time_in_minutes,
-    steps: directions.steps.join(" ").gsub(/<[^>]*>/ui, '').gsub(/"|'/, ''),
+    reply: directions.steps.join(" ").gsub(/<[^>]*>/ui, '').gsub(/"|'/, ''),
     size: directions.steps.size }
   result.to_json
 end
@@ -82,12 +85,13 @@ get '/traffic/:location' do
     break unless situation.empty?
   end
   halt 404, 'Not found' if situation.empty?
-  last_update.last.text unless last_update.blank?
+  last_update = last_update.last.text unless last_update.empty?
   result = {
     query: location,
-    sb_situation: result[0].text,
-    nb_situation: result[1].text,
-    last_update: last_update }
+    sb_situation: situation[0].text,
+    nb_situation: situation[1].text,
+    last_update: last_update,
+    reply: "SB: #{situation[0].text} NB: #{situation[1].text} #{last_update}" }
   result.to_json
 end
 
@@ -100,16 +104,17 @@ get '/any' do
   halt 500, 'Missing config' if settings.conf['api']['wolfram_key'].nil?
   halt 400, 'Missing param' unless params[:query]
   request_query = params[:query]
-  options = { format: 'plaintext' } # see the reference appendix in the documentation.[1]
+  options = { format: 'plaintext' }
   client = WolframAlpha::Client.new settings.conf['api']['wolfram_key'], options
   response = client.query "#{request_query}"
   input = response['Input'] # Get the input interpretation pod.
+  # OPTIMIZE - needs improvement in checking pods
   result = response.find { |pod| initial_check(pod.title) } # Get the result pods
   result = response.find { |pod| final_check(pod.title) } if result.nil? # Get the other pods
   halt 404, 'Not found' if result.nil?
   result = {
     query: input.subpods[0].plaintext,
-    answer: result.subpods[0].plaintext }
+    reply: result.subpods[0].plaintext }
   result.to_json
 end
 
