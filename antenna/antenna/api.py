@@ -58,36 +58,31 @@ def ernie_answer(q):
     )
     if res.status_code != requests.codes.ok:
       return "Failed to get weather"
-    return "It's {} in {}.".format(
-      res.json()["desc"],
-      location,
-    )
+    return res.json()["reply"]
 
   if intent == "get_direction":
-    locations = []
+    origin = None
+    destination = None
     for entity_type, entities in outcome["entities"].items():
-      if entity_type == "location":
+      if entity_type == "origin":
         for entity in entities:
-          locations.append(entity["value"])
-          if len(locations) >= 2:
-            break
-    if len(locations) != 2:
-      return "Didn't understand that"
+          origin = entity["value"]
+          break
+      if entity_type == "destination":
+        for entity in entities:
+          destination = entity["value"]
+          break
+    if not (origin and destination):
+      return "You need to provide the origin and destination"
     res = requests.get(
       "http://omniscient:4567/goto/{}/{}".format(
-        locations[0],
-        locations[1],
+        origin,
+        destination,
       ),
     )
     if res.status_code != requests.codes.ok:
       return "Failed to get directions"
-    directions = res.json()
-    if directions["steps"] == "[]":
-      return "Failed to get directions"
-    return """Distance: {distance}
-Time: {time} mins
-Steps:
-{steps}""".format(**directions).replace("[", "(").replace("]", ")")
+    return res.json()["reply"]
 
   if intent == "wolfram":
     res = requests.get(
@@ -98,7 +93,7 @@ Steps:
     )
     if res.status_code != requests.codes.ok:
       return "Failed to answer question"
-    return res.content
+    return res.json()["reply"]
 
   return "Sorry. I can't answer you right now :("
 
