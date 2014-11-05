@@ -49,7 +49,7 @@ get '/weather/:location' do
   day = params[:day] ? params[:day] : 0
   halt 404, 'Day of weather too advanced' if response.forecasts[day.to_i].nil?
   forecast = response.forecasts[day.to_i]['text']
-  reply = day==0 ? "#{temp}C and #{desc} today}" : "#{forecast} on #{response.forecasts[day.to_i]['day']}"
+  reply = day==0 ? "#{temp}C and #{desc} today" : "#{forecast} on #{response.forecasts[day.to_i]['day']}"
   result = {
     reply: reply
   }
