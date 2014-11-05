@@ -66,7 +66,7 @@ get '/goto/:origin/:destination' do
   result = {
     distance: directions.distance_text,
     time: directions.drive_time_in_minutes,
-    reply: directions.steps.join(" ").gsub(/<[^>]*>/ui, '').gsub(/"|'/, ''),
+    reply: directions.steps.join(" ").gsub(/<[^>]*>/ui, '').gsub(/"|'/, '\n'),
     size: directions.steps.size }
   result.to_json
 end
