@@ -15,6 +15,7 @@ h1 {
   background: url(../images/ernie.png) no-repeat center center;
   width: 150px;
   height: 150px;
+  background-size: 150px;
   margin: 50px auto;
   text-indent: -1000em;
 }
