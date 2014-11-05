@@ -22,8 +22,7 @@ h1 {
   text-indent: -1000em;
 }
 
-h2 {
-  font-size: 30px;
+h2, h3 {
   font-weight: normal;
 }
 
