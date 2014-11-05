@@ -36,10 +36,12 @@
       </div>
       <div class="demo section">
         <h2>Try Ernie</h2>
-        <form action="" method="post">
-          <p><input type="text" placeholder="Question" size="80"></p>
-          <p><button>Ask Ernie</button></p>
+        <form action="{{ url_for('api_sms') }}" method="post">
+          <input type="hidden" name="demo" value="1">
+          <p><input type="text" name="message" placeholder="Question" size="80"></p>
+          <p><button type="submit">Ask Ernie</button></p>
         </form>
+        <div class="reply"></div>
       </div>
       <div class="about section">
         <h2>Made by Kat and Steve</h2>
@@ -69,6 +71,26 @@
             ]
           }
         });
+      });
+      var $reply = $('.reply');
+      var $btn = $('.demo button');
+      $('.demo form').submit(function(e) {
+        var $this = $(this);
+        e.preventDefault();
+        $.ajax({
+          type: $this.attr('method'),
+          url: $this.attr('action'),
+          data: $this.serialize()
+        }).done(function(res) {
+          $reply.text("Ernie: " + res.message);
+        }).always(function() {
+          $btn
+            .text("Ask Ernie")
+            .prop('disabled', false);
+        });
+        $btn
+          .text("Asking...")
+          .prop('disabled', true);
       });
     </script>
   </body>

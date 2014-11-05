@@ -121,6 +121,7 @@ class SMS(Resource):
 
   def __init__(self):
     parser = RequestParser()
+    parser.add_argument("demo", type=bool)
     parser.add_argument("message_type", type=str)
     parser.add_argument("mobile_number", type=int)
     parser.add_argument("shortcode", type=int)
@@ -162,21 +163,28 @@ Body: %r
   def post(self):
     args = self.parser.parse_args()
 
-    if args.message_type != "incoming":
-      abort(400, message="Unknown message type: {}".format(args.message_type))
+    if not args.demo:
 
-    if args.shortcode != int(current_app.config["CHIKKA_SHORTCODE"]):
-      abort(400, message="Invalid shortcode: {}".format(args.shortcode))
+      if args.message_type != "incoming":
+        abort(400, message="Unknown message type: {}".format(
+          args.message_type,
+        ))
+
+      if args.shortcode != int(current_app.config["CHIKKA_SHORTCODE"]):
+        abort(400, message="Invalid shortcode: {}".format(args.shortcode))
 
     current_app.logger.debug("Query: %r", args)
     reply = ernie_answer(args.message)
 
-    self.__send("REPLY", args, reply[:MSG_MAX_LEN] + "\n-\n")
+    if not args.demo:
 
-    if len(reply) > MSG_MAX_LEN:
-      reply = reply[MSG_MAX_LEN:]
-      while reply:
-        self.__send("SEND", args, reply[:MSG_MAX_LEN] + "\n-\n")
+      self.__send("REPLY", args, reply[:MSG_MAX_LEN] + "\n-\n")
+
+      if len(reply) > MSG_MAX_LEN:
         reply = reply[MSG_MAX_LEN:]
+        while reply:
+          self.__send("SEND", args, reply[:MSG_MAX_LEN] + "\n-\n")
+          reply = reply[MSG_MAX_LEN:]
 
     return dict(status=200, message=reply)
+

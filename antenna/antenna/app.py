@@ -17,5 +17,5 @@ def create_app(**config):
   )
   app.register_blueprint(views.blueprint)
   api = Api(app)
-  api.add_resource(SMS, "/sms")
+  api.add_resource(SMS, "/sms", endpoint="api_sms")
   return app
