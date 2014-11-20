@@ -32,7 +32,7 @@ def parse_query(q):
 def ernie_answer(q):
   outcome = parse_query(q)
   if not outcome:
-    return "Failed to parse query"
+    return "Sorry. I didn't understand your question :("
 
   intent = outcome["intent"]
 
@@ -57,7 +57,9 @@ def ernie_answer(q):
       ),
     )
     if res.status_code != requests.codes.ok:
-      return "Failed to get weather"
+      return "Sorry. I can't seem to get the weather in {} :(".format(
+        location,
+      )
     return res.json()["reply"]
 
   if intent == "get_direction":
@@ -81,7 +83,9 @@ def ernie_answer(q):
       ),
     )
     if res.status_code != requests.codes.ok:
-      return "Failed to get directions"
+      return "Sorry. I don't know how to get from {} to {} :(".format(
+        origin, destination,
+      )
     return res.json()["reply"]
 
   if intent == "get_traffic":
@@ -100,7 +104,9 @@ def ernie_answer(q):
       ),
     )
     if res.status_code != requests.codes.ok:
-      return "Failed to get traffic"
+      return "Sorry. I don't know how's traffic in {} :(".format(
+        location,
+      )
     return res.json()["reply"]
 
   if intent == "wolfram":
@@ -111,7 +117,7 @@ def ernie_answer(q):
       ),
     )
     if res.status_code != requests.codes.ok:
-      return "Failed to answer question"
+      return "Sorry. I don't know how to answer that yet :("
     return res.json()["reply"]
 
   return "Sorry. I can't answer you right now :("
